@@ -1,0 +1,45 @@
+
+Execute no 1:
+
+CREATE PROCEDURE [dbo].[uspClaimSequenceNo]
+(
+	@claimcodeinitials  Varchar(15)
+	 
+)
+AS
+BEGIN
+	
+	select ISNULL(MAX(convert(int, substring(ClaimCode, 15,7))),0) +1 [ClaimSequenceNo]  from tblClaim where ClaimCode like @claimcodeinitials+'%';
+	
+END
+
+Execute no 2 : To add schemeType
+
+ALTER TABLE tblClaim ADD SchemeType int  DEFAULT NULL;
+
+Execute no3: To add tblSSFSchemes
+
+GO
+/****** Object:  Table [tblSSFSchemes]    Script Date: 1/20/2021 3:36:36 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [tblSSFSchemes](
+	[SCH_ID] [int] NOT NULL,
+	[SCH_NAME] [nvarchar](100) NULL,
+	[SCH_NAME_ENG] [nvarchar](100) NOT NULL,
+	[VISIT_TYPE] [nvarchar](10) NULL,
+	[ENTRY_BY] [nvarchar](30) NULL,
+	[ENTRY_DATE] [date] NULL,
+	[R_STATUS] [nvarchar](1) NULL,
+	[SCHAPP_ID] [int] NULL
+) ON [PRIMARY]
+GO
+INSERT [tblSSFSchemes] ([SCH_ID], [SCH_NAME], [SCH_NAME_ENG], [VISIT_TYPE], [ENTRY_BY], [ENTRY_DATE], [R_STATUS], [SCHAPP_ID]) VALUES (1, NULL, N'Medical expenses (IPD)', N'I', NULL, NULL, N'A', NULL)
+INSERT [tblSSFSchemes] ([SCH_ID], [SCH_NAME], [SCH_NAME_ENG], [VISIT_TYPE], [ENTRY_BY], [ENTRY_DATE], [R_STATUS], [SCHAPP_ID]) VALUES (2, NULL, N'Medical expenses (OPD)', N'O', NULL, NULL, N'A', NULL)
+INSERT [tblSSFSchemes] ([SCH_ID], [SCH_NAME], [SCH_NAME_ENG], [VISIT_TYPE], [ENTRY_BY], [ENTRY_DATE], [R_STATUS], [SCHAPP_ID]) VALUES (3, NULL, N'Maternity expenses (IPD)', N'I', NULL, NULL, N'A', NULL)
+INSERT [tblSSFSchemes] ([SCH_ID], [SCH_NAME], [SCH_NAME_ENG], [VISIT_TYPE], [ENTRY_BY], [ENTRY_DATE], [R_STATUS], [SCHAPP_ID]) VALUES (4, NULL, N'Maternity expenses (OPD)', N'O', NULL, NULL, N'A', NULL)
+INSERT [tblSSFSchemes] ([SCH_ID], [SCH_NAME], [SCH_NAME_ENG], [VISIT_TYPE], [ENTRY_BY], [ENTRY_DATE], [R_STATUS], [SCHAPP_ID]) VALUES (5, NULL, N'Medical expenses (Newly born child IPD )', N'I', NULL, NULL, N'A', NULL)
+INSERT [tblSSFSchemes] ([SCH_ID], [SCH_NAME], [SCH_NAME_ENG], [VISIT_TYPE], [ENTRY_BY], [ENTRY_DATE], [R_STATUS], [SCHAPP_ID]) VALUES (6, NULL, N'Medical expenses (Newly born child OPD )', N'O', NULL, NULL, N'A', NULL)
+GO

@@ -1,0 +1,121 @@
+changes in 
+DB SP uspUpdateClaimFromPhone as in given file 
+
+openimis\Lib\site-packages\api_fhir\configurations\stu3IdentifierConfig.py
+ @classmethod
+    def get_fhir_schema_code_type(cls):
+        return cls.get_config().stu3_fhir_identifier_type_config.get('fhir_code_for_imis_schema_code_type', "SC")
+
+api_fhir\serializers\claimSerializer.py
+ claim_submit = ClaimSubmit(date=validated_data.get('date_claimed'),
+                                   code=validated_data.get('code'),
+                                   icd_code=validated_data.get('icd_code'),
+                                   icd_code_1=validated_data.get('icd1_code'),
+                                   icd_code_2=validated_data.get('icd2_code'),
+                                   icd_code_3=validated_data.get('icd3_code'),
+                                   icd_code_4=validated_data.get('icd4_code'),
+                                   total=validated_data.get('claimed'),
+                                   start_date=validated_data.get('date_from'),
+                                   end_date=validated_data.get('date_to'),
+                                   insuree_chf_id=validated_data.get('insuree_chf_code'),
+                                   health_facility_code=validated_data.get('health_facility_code'),
+                                   claim_admin_code=validated_data.get('claim_admin_code'),
+                                   visit_type=validated_data.get('visit_type'),
+                                   guarantee_no=validated_data.get('guarantee_id'),
+                                   item_submits=validated_data.get('submit_items'),
+                                   service_submits=validated_data.get('submit_services'),
+                                   comment=validated_data.get('explanation'),
+                                   scheme_type=validated_data.get('scheme_type')
+                                   )
+C:\inetpub\wwwroot\openimis-be_py-1.1.0\openIMIS\Lib\site-packages\api_fhir\converters\claimConverter.py
+@classmethod
+    def to_imis_obj(cls, fhir_claim, audit_user_id):
+        errors = []
+        imis_claim = Claim()
+        cls.build_imis_date_claimed(imis_claim, fhir_claim, errors)
+        cls.build_imis_health_facility(errors, fhir_claim, imis_claim)
+        cls.build_imis_identifier(imis_claim, fhir_claim, errors)
+        cls.build_imis_patient(imis_claim, fhir_claim, errors)
+        cls.build_imis_schema_identifier(imis_claim, fhir_claim, errors)
+        cls.build_imis_date_range(imis_claim, fhir_claim, errors)
+        cls.build_imis_diagnoses(imis_claim, fhir_claim, errors)
+        cls.build_imis_total_claimed(imis_claim, fhir_claim, errors)
+        cls.build_imis_claim_admin(imis_claim, fhir_claim, errors)
+        cls.build_imis_visit_type(imis_claim, fhir_claim)
+        cls.build_imis_information(imis_claim, fhir_claim)
+        cls.build_imis_submit_items_and_services(imis_claim, fhir_claim)
+        cls.check_errors(errors)
+        return imis_claim
+		
+ @classmethod
+    def build_imis_schema_identifier(cls, imis_claim, fhir_claim, errors):
+        value = cls.get_fhir_identifier_by_code(fhir_claim.identifier, Stu3IdentifierConfig.get_fhir_schema_code_type())
+        if value:
+            imis_claim.scheme_type = value
+        cls.valid_condition(imis_claim.scheme_type is None, gettext('Missing the Schema code'), errors)
+
+C:\inetpub\wwwroot\openimis-be_py-1.1.0\openIMIS\Lib\site-packages\claim\services.py
+@core.comparable
+class ClaimSubmit(object):
+    def __init__(self, date, code, icd_code, total, start_date,
+                 insuree_chf_id, health_facility_code,
+                 claim_admin_code,
+                 item_submits=None, service_submits=None,
+                 end_date=None,
+                 icd_code_1=None, icd_code_2=None, icd_code_3=None, icd_code_4=None,
+                 visit_type=None, guarantee_no=None,
+                 comment=None,scheme_type=None
+                 ):
+        self.date = date
+        self.code = code
+        self.icd_code = icd_code
+        self.total = total
+        self.start_date = start_date
+        self.insuree_chf_id = insuree_chf_id
+        self.health_facility_code = health_facility_code
+        self.end_date = end_date
+        self.icd_code_1 = icd_code_1
+        self.icd_code_2 = icd_code_2
+        self.icd_code_3 = icd_code_3
+        self.icd_code_4 = icd_code_4
+        self.claim_admin_code = claim_admin_code
+        self.visit_type = visit_type
+        self.guarantee_no = guarantee_no
+        self.comment = comment
+        self.items = item_submits
+        self.services = service_submits
+        self.scheme_type=scheme_type
+
+    def _details_to_xmlelt(self, xmlelt):
+        ET.SubElement(xmlelt, 'ClaimDate').text = self.date.to_ad_date().strftime(
+            "%d/%m/%Y")
+        ET.SubElement(
+            xmlelt, 'HFCode').text = "%s" % self.health_facility_code
+        if self.claim_admin_code:
+            ET.SubElement(
+                xmlelt, 'ClaimAdmin').text = "%s" % self.claim_admin_code
+        ET.SubElement(xmlelt, 'ClaimCode').text = "%s" % self.code
+        ET.SubElement(xmlelt, 'CHFID').text = "%s" % self.insuree_chf_id
+        ET.SubElement(
+            xmlelt, 'StartDate').text = self.start_date.to_ad_date().strftime("%d/%m/%Y")
+        if self.comment:
+            ET.SubElement(xmlelt, 'Comment').text = "%s" % self.comment
+        if self.scheme_type:
+            ET.SubElement(xmlelt, 'SchemeType').text =  "%s" % self.scheme_type
+        ET.SubElement(xmlelt, 'ICDCode').text = "%s" % self.icd_code
+        if self.comment:
+            ET.SubElement(xmlelt, 'Comment').text = "%s" % self.comment
+        ET.SubElement(xmlelt, 'Total').text = "%s" % self.total
+        if self.icd_code_1:
+            ET.SubElement(xmlelt, 'ICDCode1').text = "%s" % self.icd_code_1
+        if self.icd_code_2:
+            ET.SubElement(xmlelt, 'ICDCode1').text = "%s" % self.icd_code_2
+        if self.icd_code_3:
+            ET.SubElement(xmlelt, 'ICDCode1').text = "%s" % self.icd_code_3
+        if self.icd_code_4:
+            ET.SubElement(xmlelt, 'ICDCode1').text = "%s" % self.icd_code_4
+        if self.visit_type:
+            ET.SubElement(xmlelt, 'VisitType').text = "%s" % self.visit_type
+        if self.guarantee_no:
+            ET.SubElement(
+                xmlelt, 'GuaranteeNo').text = "%s" % self.guarantee_no

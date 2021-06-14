@@ -1,0 +1,74 @@
+{
+    "resourceType": "Claim",
+    "billablePeriod": {
+        "end": "2020-05-23",
+        "start": "2020-05-23"
+    },"created": "2020-05-24",
+    "diagnosis": [
+        {
+            "diagnosisCodeableConcept": {
+                "coding": [
+                    {
+                        "code": "A01"
+                    }
+                ]
+            },
+            "sequence": 1,
+            "type": [
+                {
+                    "text": "icd_0"
+                }
+            ]
+        }
+    ],
+    "enterer": {
+        "reference": "Practitioner/CE82B1BD-495F-42D2-B2D6-CA44F5D2B029"
+    },
+    "facility": {
+        "reference": "Location/954EC1AC-7620-4824-9663-14189F8B9563"
+    },
+    "identifier": [
+        {
+            "type": {
+                "coding": [
+                    {
+                        "code": "ACSN",
+                        "system": "https://hl7.org/fhir/valueset-identifier-type.html"
+                    }
+                ]
+            },
+            "use": "usual",
+            "value": "FD3BCF6F-8D16-4425-8628-5A7B79E50180"
+        },
+        {
+            "type": {
+                "coding": [
+                    {
+                        "code": "MR",
+                        "system": "https://hl7.org/fhir/valueset-identifier-type.html"
+                    }
+                ]
+            },
+            "use": "usual",
+            "value": "12962785"
+        },
+        {
+            "type": {
+                "coding": [
+                    {
+                        "code": "SC",
+                        "system": "https://hl7.org/fhir/valueset-identifier-type.html"
+                    }
+                ]
+            },
+            "use": "usual",
+            "value": "5"
+        }
+    ],
+    "patient": {
+        "reference": "Patient/38AA1CF5-59A6-4B77-BE2F-83E226E96547"
+    },
+    "total": {
+        "value": 200.0
+    }
+}

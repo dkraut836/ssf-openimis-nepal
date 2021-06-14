@@ -1,0 +1,2 @@
+replace the models.py in  Lib\site-packages\claim
+add sosys_url=https://sudishrestha.com.np/sosys_status_check.json to env file of backend 
